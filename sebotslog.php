@@ -86,12 +86,12 @@ function sebotslogs_options_page() {
 
     echo '<div class="wrap">';
     echo '<h2>SE Robots log</h2>';
-    echo '<h3>Плагин сбора статистики посещений блога роботами поисковых систем <a href="http://www.yandex.ru" target="_blank">Yandex</a>, <a href="http://www.google.com" target="_blank">Google</a>, <a href="http://mail.ru" target="_blank">Mail.ru</a></h3>';
-    echo 'Версия: ' . $sebotslogs_version . '<br/>Автор плагина <a href="http://4remind.ru" target="_blank">4remind.ru</a><br/><br/>';
-    echo '<b>Текущая дата и время сервера: ' . current_time( 'mysql' ) . '</b><br/>';
-    echo '<h3 style="margin:1em 0 -2em 0;">Статистика:</h3>';
+    echo '<h3>Plugin for collecting statistics on search engine bot visits to the blog.';
+    echo 'Version: ' . $sebotslogs_version . '<br/>Plugin author <a href="https://sayri.work/" target="_blank">sayri.work</a><br/><br/>';
+    echo '<b>Current server date and time: ' . current_time( 'mysql' ) . '</b><br/>';
+    echo '<h3 style="margin:1em 0 -2em 0;">Statistics:</h3>';
 	echo '<table cellspacing="0" cellpadding="4" border="1">';
-	echo '<tr style="font-weight:bold;text-align:center;background-color:#dddddd;"><td>ПС</td><td>Сегодня</td><td>Вчера</td><td>7 дней</td><td>30 дней</td><td>90 дней</td><td>Всего</td><td>Последнее посещение</td></tr>';	
+	echo '<tr style="font-weight:bold;text-align:center;background-color:#dddddd;"><td>ПС</td><td>Сегодня</td><td>Yesterday</td><td>7 days</td><td>30 days</td><td>90 days</td><td>Total</td><td>Last visit</td></tr>';	
 
 	$sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex"';
     $se_total_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
