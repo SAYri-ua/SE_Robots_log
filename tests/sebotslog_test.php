@@ -86,7 +86,6 @@ $expected_bots = array(
     'Yahoo' => array('Yahoo! Slurp', 'Slurp'),
     'DuckDuckGo' => array('DuckDuckBot'),
     'Apple' => array('Applebot'),
-    'Yandex' => array('YandexBot', 'YandexImages', 'YandexVideo'),
     'Baidu' => array('Baiduspider'),
     'Qwant' => array('Qwantbot'),
     'Naver' => array('Yeti'),

@@ -2,7 +2,7 @@
 
 Плагін для WordPress, який збирає статистику запитів пошукових роботів до сайту. Дані зберігаються в базі даних WordPress та відображаються в адміністративній панелі.
 
-**Версія:** 0.0.1  
+**Версія:** 0.1.1  
 **Автор:** [SAYri](https://sayri.work/)  
 **Ліцензія:** GPLv2 або новіша
 
@@ -24,7 +24,6 @@
 | Yahoo | `Yahoo! Slurp`, `Slurp` |
 | DuckDuckGo | `DuckDuckBot` |
 | Apple | `Applebot` |
-| Yandex | `YandexBot`, `YandexImages`, `YandexVideo` |
 | Baidu | `Baiduspider` |
 | Qwant | `Qwantbot` |
 | Naver | `Yeti` |
