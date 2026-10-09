@@ -1,7 +1,7 @@
 <?php
 /**
  * @package SE_Robots_log
- * @version 0.0.1
+ * @version 0.1.1
  */
 
 /*
@@ -33,7 +33,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-$sebotslogs_version = '0.0.1';
+$sebotslogs_version = '0.1.1';
 $sebotslogs_se_req_date = current_time('mysql');
 $sebotslogs_se_name = '';
 $sebotslogs_se_bot = '';
@@ -44,6 +44,50 @@ define('SEBOTSLOGS_URLS_LIFETIME_DEFAULT', 2); // default lifetime of 'urls' rec
 define('SEBOTSLOGS_URLS_INTO_DB_DEFAULT', 0); // logging requested URLs is OFF by default
 $sebotslogs_urls_into_db = 0;
 $day = 86400; // 24*60*60 seconds
+$search_engines = [
+        'google' => [
+            'name' => 'Google',
+            'user_agents' => ['Googlebot', 'Googlebot-Image', 'Googlebot-Video', 'Storebot-Google'],
+        ],
+        'bing' => [
+            'name' => 'Bing',
+            'user_agents' => ['bingbot', 'MicrosoftPreview', 'BingVideoPreview'],
+        ],
+        'yahoo' => [
+            'name' => 'Yahoo',
+            'user_agents' => ['Yahoo! Slurp', 'Slurp'],
+        ],
+        'duckduckgo' => [
+            'name' => 'DuckDuckGo',
+            'user_agents' => ['DuckDuckBot'],
+        ],
+        'apple' => [
+            'name' => 'Apple',
+            'user_agents' => ['Applebot'],
+        ],
+        'baidu' => [
+            'name' => 'Baidu',
+            'user_agents' => ['Baiduspider'],
+        ],
+        'qwant' => [
+            'name' => 'Qwant',
+            'user_agents' => ['Qwantbot'],
+        ],
+        'naver' => [
+            'name' => 'Naver',
+            'user_agents' => ['Yeti'],
+        ],
+        'mojeek' => [
+            'name' => 'Mojeek',
+            'user_agents' => ['MojeekBot'],
+        ],
+        'chatgpt' => [
+            'name' => 'ChatGPT',
+            'user_agents' => ['OAI-SearchBot', 'ChatGPT-User'],
+		],
+    ]; // Search engines and their supported User-Agent identifiers.
+
+
 
 function sebotslogs_options_page() {
 
@@ -51,6 +95,7 @@ function sebotslogs_options_page() {
     global $day;
     global $sebotslogs_version;    
     global $sebotslogs_urls_into_db;
+	global $search_engines;
 
     // If Options Form sent data, then apply form changes
     if (isset($_POST['sebotslogs_options_save_btn'])) {
@@ -93,33 +138,56 @@ function sebotslogs_options_page() {
 	echo '<table cellspacing="0" cellpadding="4" border="1">';
 	echo '<tr style="font-weight:bold;text-align:center;background-color:#dddddd;"><td>Search engine</td><td>Today</td><td>Yesterday</td><td>7 days</td><td>30 days</td><td>90 days</td><td>Total</td><td>Last visit</td></tr>';
 
-	
 
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google"';
-    $se_total_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_today_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_yesterday_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 7*$day ) . '"';
-    $se_lastweek_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 30*$day ) . '"';
-    $se_lastmonth_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 90*$day ) . '"';
-    $se_last3month_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT `date` FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google" ORDER BY `id` DESC LIMIT 1';
-    $se_last_datatime_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
+    $timestamp = current_time('timestamp');
+    $today_boundary = date('Y-m-d 23:59:59', $timestamp - $day);
+    $yesterday_boundary = date('Y-m-d 23:59:59', $timestamp - 2 * $day);
 
-    echo '<tr style="text-align:center;"><td><b><a href="https://www.google.com/webmasters/tools/" target="_blank">Google</a></b></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_today_count . '&nbsp;</span></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_yesterday_count . '&nbsp;</span></td><td>' .
-			$se_lastweek_count . '</td><td>' .
-			$se_lastmonth_count . '</td><td>' .
-			$se_last3month_count . '</td><td>' .
-			$se_total_count . '</td><td>' .
-			$se_last_datatime_count . '</td></tr><br/>';
+    // Fetch statistics for all engines in one query.
+    $sql = 'SELECT `name`, COUNT(*) AS total_count,
+        SUM(`date` > %s) AS today_count,
+        SUM(`date` > %s AND `date` <= %s) AS yesterday_count,
+        SUM(`date` > %s) AS lastweek_count,
+        SUM(`date` > %s) AS lastmonth_count,
+        SUM(`date` > %s) AS last3month_count,
+        MAX(`date`) AS last_visit
+        FROM `' . $wpdb->prefix . 'sebotslogs_se` GROUP BY `name`';
+    $statistics = $wpdb->get_results($wpdb->prepare(
+        $sql,
+        $today_boundary,
+        $yesterday_boundary,
+        $today_boundary,
+        date('Y-m-d 23:59:59', $timestamp - 7 * $day),
+        date('Y-m-d 23:59:59', $timestamp - 30 * $day),
+        date('Y-m-d 23:59:59', $timestamp - 90 * $day)
+    ), OBJECT);
+    $engine_statistics = array();
+    foreach ((array) $statistics as $statistics_row) {
+        $engine_statistics[$statistics_row->name] = $statistics_row;
+    }
+    $empty_statistics = (object) array(
+        'today_count' => 0,
+        'yesterday_count' => 0,
+        'lastweek_count' => 0,
+        'lastmonth_count' => 0,
+        'last3month_count' => 0,
+        'total_count' => 0,
+        'last_visit' => '',
+    );
+
+    foreach ($search_engines as $engine_key => $engine) {
+        $stats = isset($engine_statistics[$engine['name']]) ? $engine_statistics[$engine['name']] : $empty_statistics;
+        echo '<tr style="text-align:center;"><td><b>' . esc_html($engine['name']) . '</b></td>';
+        
+        foreach (array($engine_key . '_urls' => $stats->today_count, $engine_key . '2_urls' => $stats->yesterday_count) as $panel_id => $count) {
+            echo '<td><span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="var panel = document.getElementById(\'' . esc_attr($panel_id) . '\'); panel.style.display = panel.style.display === \'none\' ? \'\' : \'none\';">&nbsp;' . (int) $count . '&nbsp;</span></td>';
+        }
+        echo '<td>' . (int) $stats->lastweek_count . '</td><td>' .
+            (int) $stats->lastmonth_count . '</td><td>' .
+            (int) $stats->last3month_count . '</td><td>' .
+            (int) $stats->total_count . '</td><td>' .
+            esc_html($stats->last_visit) . '</td></tr>';
+    }
 
     echo '</table><br/>';
 
@@ -127,33 +195,28 @@ function sebotslogs_options_page() {
 
 	sebotslogs_refresh_options_page();
 
-	// Google URLs from Today
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
+    // Group the two-day URL log by engine and day.
+    $sql = 'SELECT `name`, `date`, `url` FROM `' . $wpdb->prefix . 'sebotslogs_urls` WHERE `date` > %s ORDER BY `id` ASC';
+    $sebotslogs_last_urls_requested = $wpdb->get_results($wpdb->prepare($sql, $yesterday_boundary), OBJECT);
+    $engine_urls = array();
+    foreach ((array) $sebotslogs_last_urls_requested as $urls_requested) {
+        $period = $urls_requested->date > $today_boundary ? 'today' : 'yesterday';
+        $engine_urls[$urls_requested->name][$period][] = $urls_requested;
+    }
 
-	echo '<div><div id="google_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Google (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Google" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
-
-	// Google URLs from Yesterday
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-
-	echo '<div><div id="google2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Google (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Google" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
+    foreach ($search_engines as $engine_key => $engine) {
+        foreach (array('today' => $engine_key . '_urls', 'yesterday' => $engine_key . '2_urls') as $period => $panel_id) {
+            $close_button = '<span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="document.getElementById(\'' . esc_attr($panel_id) . '\').style.display = \'none\';">[X] Close</span>';
+            echo '<div><div id="' . esc_attr($panel_id) . '" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
+            echo '<b>' . esc_html($engine['name']) . ' (' . esc_html($period) . '):&nbsp;&nbsp;&nbsp;</b>' . $close_button . '<br/><br/>';
+            $urls = isset($engine_urls[$engine['name']][$period]) ? $engine_urls[$engine['name']][$period] : array();
+            foreach ($urls as $urls_requested) {
+                $url = 'http://' . $urls_requested->url;
+                echo esc_html($urls_requested->date) . ' | <a target="_blank" href="' . esc_url($url) . '">' . esc_html($url) . '</a><br/>';
+            }
+            echo '<br/>' . $close_button . '<br/><br/></span></div></div>';
+        }
+    }
 
 
     echo <<<OPTIONSTOP
@@ -203,7 +266,7 @@ HELP1;
     $sql = 'DELETE FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `date` < "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day * get_option('sebotslogs_logs_lifetime')) . '"';
     $wpdb->query( $sql );
 
-    unset( $sql, $se_today_count, $se_yesterday_count, $se_lastweek_count, $se_lastmonth_count, $se_total_count );
+    unset( $sql );
 }
 
 /**
@@ -357,33 +420,38 @@ function sebotslogs_add_se_db() {
  *
  */
 function sebotslogs_check_se_robots() {
-    
-    global $sebotslogs_se_name; 
-    global $sebotslogs_se_url; 
-    global $sebotslogs_urls_into_db; 
-	$is_bot = FALSE;
-	
-    if( isset( $_SERVER['HTTP_USER_AGENT'] ) && isset( $_SERVER['REQUEST_URI'] )) {
-        
-		$s_useragent = $_SERVER['HTTP_USER_AGENT'];
+    global $sebotslogs_se_name;
+    global $sebotslogs_se_bot;
+    global $sebotslogs_se_url;
+	global $search_engines;
 
-        if ( stripos( $s_useragent, " googlebot" )) {
+    $sebotslogs_se_name = '';
+    $sebotslogs_se_bot = '';
+    $sebotslogs_se_url = '';
 
-            $is_bot = TRUE;
-            $sebotslogs_se_name = "Google";
+    if (!isset($_SERVER['HTTP_USER_AGENT'], $_SERVER['REQUEST_URI'])) {
+        return;
+    }
 
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    foreach ($search_engines as $engine) {
+        $matched_bot = '';
+        foreach ($engine['user_agents'] as $bot) {
+            // Prefer the specific identifier, e.g. Googlebot-Image over Googlebot.
+            if (stripos($user_agent, $bot) !== false && strlen($bot) > strlen($matched_bot)) {
+                $matched_bot = $bot;
+            }
         }
 
-        if( $is_bot ) {
-
-            if( get_option('sebotslogs_urls_into_db') )
+        if ($matched_bot !== '') {
+            $sebotslogs_se_name = $engine['name'];
+            $sebotslogs_se_bot = $matched_bot;
+            if (get_option('sebotslogs_urls_into_db')) {
                 $sebotslogs_se_url = $_SERVER['REQUEST_URI'];
-
+            }
             sebotslogs_add_se_db();
-
+            return;
         }
-
-        unset( $is_bot, $s_useragent );
     }
 }
 
