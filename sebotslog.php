@@ -125,46 +125,7 @@ function sebotslogs_options_page() {
 
     echo "Maximum retention period for counter records = " . get_option('sebotslogs_logs_lifetime') . " days<br/><br/>";
 
-    // shows table status
-	/*
-	$sql = "SHOW TABLE STATUS LIKE '" . $wpdb->prefix."sebotslogs_urls" . "'";
-	$table_state = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-	foreach ( $table_state as $tbl_state ) {
-		$table_length = ($tbl_state->Data_length + $tbl_state->Index_length)/1024;
-		echo 'Database table size for URLs requested by search engine bots ~ ' . round( $table_length, 0) . ' KB ' . '<br /><br />';
-	}
-    echo '<br />';
-	*/
-
 	sebotslogs_refresh_options_page();
-
-	// Yandex URLs from Today
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-
-	echo '<div><div id="yandex_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Yandex (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Yandex" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
-
-	// Yandex URLs from Yesterday
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-
-	echo '<div><div id="yandex2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Yandex (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Yandex" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
 
 	// Google URLs from Today
 	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Google" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
@@ -194,33 +155,6 @@ function sebotslogs_options_page() {
 	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
-	// Mail.ru URLs from Today
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-
-	echo '<div><div id="mailru_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Mail.ru (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Mail.ru" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
-
-	// Mail.ru URLs from Yesterday
-	$sql = 'SELECT * FROM `' . $wpdb->prefix."sebotslogs_urls" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
-
-	echo '<div><div id="mailru2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Mail.ru (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
-		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
-			if ( $urls_requested->name == "Mail.ru" ) {
-				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
-			}
-		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
-	echo "<br/></span></div></div>";
 
     echo <<<OPTIONSTOP
 	<div>
@@ -433,21 +367,10 @@ function sebotslogs_check_se_robots() {
         
 		$s_useragent = $_SERVER['HTTP_USER_AGENT'];
 
-        if(( stripos( $s_useragent, " yandex" )) && 
-		( stripos( $s_useragent, " +http://yandex.com/bots" )) ) { 
-
-            $is_bot = TRUE;
-            $sebotslogs_se_name = "Yandex";
-			
-        } elseif ( stripos( $s_useragent, " googlebot" )) {
+        if ( stripos( $s_useragent, " googlebot" )) {
 
             $is_bot = TRUE;
             $sebotslogs_se_name = "Google";
-
-        } elseif ( stripos( $s_useragent, " Mail.RU_Bot" ) && stripos( $s_useragent, " +http://go.mail.ru/help/robots" )) {
-
-            $is_bot = TRUE;
-            $sebotslogs_se_name = "Mail.ru";
 
         }
 
