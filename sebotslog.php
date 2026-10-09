@@ -86,38 +86,14 @@ function sebotslogs_options_page() {
 
     echo '<div class="wrap">';
     echo '<h2>SE Robots log</h2>';
-    echo '<h3>Plugin for collecting statistics on search engine bot visits to the blog.';
+    echo '<h3>Plugin for collecting statistics on search engine bot visits to the blog.</h3>';
     echo 'Version: ' . $sebotslogs_version . '<br/>Plugin author <a href="https://sayri.work/" target="_blank">sayri.work</a><br/><br/>';
     echo '<b>Current server date and time: ' . current_time( 'mysql' ) . '</b><br/>';
-    echo '<h3 style="margin:1em 0 -2em 0;">Statistics:</h3>';
+    echo '<h3 style="margin:1em 0 -2em 0;">Statistics:</h3><br><br>';
 	echo '<table cellspacing="0" cellpadding="4" border="1">';
-	echo '<tr style="font-weight:bold;text-align:center;background-color:#dddddd;"><td>ПС</td><td>Сегодня</td><td>Yesterday</td><td>7 days</td><td>30 days</td><td>90 days</td><td>Total</td><td>Last visit</td></tr>';	
+	echo '<tr style="font-weight:bold;text-align:center;background-color:#dddddd;"><td>Search engine</td><td>Today</td><td>Yesterday</td><td>7 days</td><td>30 days</td><td>90 days</td><td>Total</td><td>Last visit</td></tr>';
 
-	$sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex"';
-    $se_total_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_today_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_yesterday_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 7*$day) . '"';
-    $se_lastweek_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 30*$day) . '"';
-    $se_lastmonth_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 90*$day) . '"';
-    $se_last3month_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT `date` FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Yandex" ORDER BY `id` DESC LIMIT 1';
-    $se_last_datatime_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
 	
-    echo '<tr style="text-align:center;"><td><b><a href="http://webmaster.yandex.ru/sites/" target="_blank">Yandex</a></b></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_today_count . '&nbsp;</span></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_yesterday_count . '&nbsp;</span></td><td>' .
-			$se_lastweek_count . '</td><td>' .
-			$se_lastmonth_count . '</td><td>' .
-			$se_last3month_count . '</td><td>' .
-			$se_total_count . '</td><td>' .
-			$se_last_datatime_count . '</td></tr><br/>';
 
     $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Google"';
     $se_total_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
@@ -145,35 +121,9 @@ function sebotslogs_options_page() {
 			$se_total_count . '</td><td>' .
 			$se_last_datatime_count . '</td></tr><br/>';
 
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru"';
-    $se_total_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_today_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 2*$day ) . '" AND `date` <= "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - $day ) . '"';
-    $se_yesterday_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 7*$day ) . '"';
-    $se_lastweek_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 30*$day ) . '"';
-    $se_lastmonth_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT COUNT(*) FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" AND `date` > "' . date( 'Y-m-d 23:59:59', current_time( 'timestamp' ) - 90*$day ) . '"';
-    $se_last3month_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-    $sql = 'SELECT `date` FROM `' . $wpdb->prefix."sebotslogs_se" . '` WHERE `name`="Mail.ru" ORDER BY `id` DESC LIMIT 1';
-    $se_last_datatime_count = $wpdb->get_var( $wpdb->prepare( $sql, null ));
-
-	echo '<tr style="text-align:center;"><td><b><a href="http://webmaster.mail.ru/" target="_blank">Mail.ru</a></b></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_today_count . '&nbsp;</span></td><td>' .
-			'<span style="cursor:pointer;text-decoration:underline;font-weight:bold;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >&nbsp;' .
-			$se_yesterday_count . '&nbsp;</span></td><td>' .
-			$se_lastweek_count . '</td><td>' .
-			$se_lastmonth_count . '</td><td>' .
-			$se_last3month_count . '</td><td>' .
-			$se_total_count . '</td><td>' .
-			$se_last_datatime_count . '</td></tr><br/>';
-
     echo '</table><br/>';
 
-    echo "Максимальный срок давности записей счетчиков = " . get_option('sebotslogs_logs_lifetime') . " дней<br/><br/>";
+    echo "Maximum retention period for counter records = " . get_option('sebotslogs_logs_lifetime') . " days<br/><br/>";
 
     // shows table status
 	/*
@@ -181,7 +131,7 @@ function sebotslogs_options_page() {
 	$table_state = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 	foreach ( $table_state as $tbl_state ) {
 		$table_length = ($tbl_state->Data_length + $tbl_state->Index_length)/1024;
-		echo 'Размер таблицы в БД со ссылками запросов от поисковых ботов ~ ' . round( $table_length, 0) . ' Кб ' . '<br /><br />';
+		echo 'Database table size for URLs requested by search engine bots ~ ' . round( $table_length, 0) . ' KB ' . '<br /><br />';
 	}
     echo '<br />';
 	*/
@@ -193,13 +143,13 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="yandex_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Yandex (сегодня):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Yandex (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Yandex" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex_urls\').style.display != \'\') { document.getElementById(\'yandex_urls\').style.display = \'\';} else { document.getElementById(\'yandex_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
 	// Yandex URLs from Yesterday
@@ -207,13 +157,13 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="yandex2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Yandex (вчера):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Yandex (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Yandex" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'yandex2_urls\').style.display != \'\') { document.getElementById(\'yandex2_urls\').style.display = \'\';} else { document.getElementById(\'yandex2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
 	// Google URLs from Today
@@ -221,13 +171,13 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="google_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Google (сегодня):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Google (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Google" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google_urls\').style.display != \'\') { document.getElementById(\'google_urls\').style.display = \'\';} else { document.getElementById(\'google_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
 	// Google URLs from Yesterday
@@ -235,13 +185,13 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="google2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Google (вчера):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Google (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Google" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'google2_urls\').style.display != \'\') { document.getElementById(\'google2_urls\').style.display = \'\';} else { document.getElementById(\'google2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
 	// Mail.ru URLs from Today
@@ -249,13 +199,13 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="mailru_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Mail.ru (сегодня):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Mail.ru (today):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Mail.ru" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru_urls\').style.display != \'\') { document.getElementById(\'mailru_urls\').style.display = \'\';} else { document.getElementById(\'mailru_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
 	// Mail.ru URLs from Yesterday
@@ -263,26 +213,26 @@ function sebotslogs_options_page() {
 	$sebotslogs_last_urls_requested = $wpdb->get_results( $wpdb->prepare( $sql, null ), OBJECT );
 
 	echo '<div><div id="mailru2_urls" style="display:none;padding:10px;margin:0px 20px 20px 0px; border:1px #aaa solid;"><span>';
-	echo '<b>Mail.ru (вчера):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/><br/>';
+	echo '<b>Mail.ru (yesterday):&nbsp;&nbsp;&nbsp;</b><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Close</span><br/><br/>';
 		foreach ( $sebotslogs_last_urls_requested as $urls_requested ) {
 			if ( $urls_requested->name == "Mail.ru" ) {
 				echo $urls_requested->date . ' |  <a target="_blank" href="http://' . $urls_requested->url . '">http://' . $urls_requested->url . '</a><br/>';
 			}
 		}
-	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Закрыть</span><br/>';
+	echo '<br/><span style="color:brown;cursor:pointer;text-decoration:underline;" onclick="if (document.getElementById(\'mailru2_urls\').style.display != \'\') { document.getElementById(\'mailru2_urls\').style.display = \'\';} else { document.getElementById(\'mailru2_urls\').style.display = \'none\';}" >[X] Close</span><br/>';
 	echo "<br/></span></div></div>";
 
     echo <<<OPTIONSTOP
 	<div>
 		<div>
-			<input type="button" value="Настройки" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Скрыть настройки'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Настройки'; }"/>
+			<input type="button" value="Settings" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Hide settings'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Settings'; }"/>
 		</div>
 		<div>
 			<div style="display: none; padding: 10px; margin-right: 20px; border: 1px #aaa solid;">
 				<span>
 OPTIONSTOP;
 
-    echo "<h3>Настройки плагина SE Robots log</h3>";
+    echo "<h3>SE Robots log plugin settings</h3>";
 
 // Save Options
     sebotslogs_save_options_form();
@@ -297,18 +247,18 @@ OPTIONSBOTTOM;
     echo <<<HELP1
 	<div>
 		<div>
-			<input type="button" value="Справка" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Скрыть справку'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Справка'; }"/>
+			<input type="button" value="Help" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Hide help'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Help'; }"/>
 		</div>
 		<div>
 			<div style="display: none; padding: 10px; margin-right: 20px; border: 1px #aaa solid;">
 				<span>
 					<ol>
-						<li>При активации плагина в базе данных создаются таблицы «вашпрефикс_sebotslogs_se» и «вашпрефикс_sebotslogs_urls», и используется они только для работы плагина «SE Robots log».<br /></li>
-						<li>При деактивации плагина созданные таблицы не удаляются из базы данных, и все данные в них сохранятся.<br /></li>
-						<li>Таблицы будут удалены из базы данных, если Вы удалите плагин соответствующей командой из консоли WordPress.<br /></li>
-						<li>НЕ рекомендуется удалять плагин вручную, т.е. методом ручного удаления каталога плагина и его файлов, так как в этом случае в базе данных останутся таблицы «вашпрефикс_sebotslogs_se» и «вашпрефикс_sebotslogs_urls».<br /></li>
-						<li>Записи в таблице «вашпрефикс_sebotslogs_urls» хранятся максимум 2 дня, т.е. все записи, срок давности которых больше 2 дней, удаляются автоматически.</li>
-						<li>Во избежание переполнения Базы Данных записи в таблице «вашпрефикс_sebotslogs_se» хранятся максимум 90 дней (по умолчанию), т.е. все записи, срок давности которых больше 90 дней (значение по умолчанию), удаляются автоматически.</li>
+						<li>Activating the plugin creates the database tables «yourprefix_sebotslogs_se» and «yourprefix_sebotslogs_urls», used exclusively by the «SE Robots log» plugin.<br /></li>
+						<li>Deactivating the plugin leaves the tables in the database and preserves all their data.<br /></li>
+						<li>The tables will be removed from the database when you delete the plugin through the WordPress dashboard.<br /></li>
+						<li>Removing the plugin directory and its files manually is NOT recommended, because this leaves the tables «yourprefix_sebotslogs_se» and «yourprefix_sebotslogs_urls» in the database.<br /></li>
+						<li>Records in the «yourprefix_sebotslogs_urls» table are retained for a maximum of 2 days. Records older than 2 days are deleted automatically.</li>
+						<li>To prevent the database from growing too large, records in the «yourprefix_sebotslogs_se» table are retained for a maximum of 90 days by default. Records older than 90 days (the default value) are deleted automatically.</li>
 					</ol>
 				</span>
 			</div>
@@ -329,7 +279,7 @@ HELP1;
 function sebotslogs_refresh_options_page() {
 
 	echo '<div>
-				<input type="button" value="Обновить" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="window.location.reload();"/><br/><br/>
+				<input type="button" value="Refresh" style="width:120px;font-weight:bold;cursor:pointer;background-color: inherit; border: 1px solid #000;" onclick="window.location.reload();"/><br/><br/>
 			</div>';
 
 }
@@ -353,31 +303,31 @@ function sebotslogs_save_options_form() {
 
     echo "<table>
 			<tr>
-				<td style='text-align:right;'>Максимальный срок давности записей счетчиков: <br/>(дней) </td>
+				<td style='text-align:right;'>Maximum retention period for counter records: <br/>(days) </td>
 				<td style='width:80px;'><input style='text-align:center;width:80px;' type='text' name='sebotslogs_logs_lifetime' value='" . get_option('sebotslogs_logs_lifetime') . "'/></td>
-				<td><i>Записи логов счетчиков, давность которых превышает указанное количество дней, удаляются из Базы Данных.</i></td>
+				<td><i>Counter log records older than the specified number of days are deleted from the database.</i></td>
 			</tr>
             <tr>
-				<td style='text-align:right;'><br/>Логировать ссылки страниц: </td>
+				<td style='text-align:right;'><br/>Log page URLs: </td>
 				<td style='width:80px;text-align:center;'><br/><input type='checkbox' name='sebotslogs_urls_into_db' ";
 					if( get_option('sebotslogs_urls_into_db') ) echo ' checked="checked" ';
 						echo " />
 				</td>
-				<td><br/><i>Отметьте, если хотите сохранять ссылки посещенных поисковыми ботами страниц в Базе Данных.</i></td>
+				<td><br/><i>Select this option to save the URLs of pages visited by search engine bots in the database.</i></td>
 			</tr>
 			<tr>
-				<td style='text-align:right;color:blue;'><br/>Удалить все ссылки: </td>
+				<td style='text-align:right;color:blue;'><br/>Delete all URLs: </td>
 				<td style='width:80px;text-align:center;'><br/><input type='checkbox' name='sebotslogs_urls_delete_chb' /></td>
-				<td style='color:blue;'><br/><i>Отметьте, если хотите удалить все ссылки посещенных поисковыми ботами страниц из Базы Данных.</i></td>
+				<td style='color:blue;'><br/><i>Select this option to delete all URLs of pages visited by search engine bots from the database.</i></td>
 			</tr>
 			<tr>
-				<td style='text-align:right;color:red;'><br/>Удалить все записи плагина: </td>
+				<td style='text-align:right;color:red;'><br/>Delete all plugin records: </td>
 				<td style='width:80px;text-align:center;'><br/><input type='checkbox' name='sebotslogs_reset_chb' /></td>
-				<td style='color:red;'><br/><i>Отметьте, если хотите удалить все записи плагина из Базы Данных.</i></td>
+				<td style='color:red;'><br/><i>Select this option to delete all plugin records from the database.</i></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td style='text-align:center;'><br/><input style='width:80px;cursor:pointer;' type='submit' name='sebotslogs_options_save_btn' value='Применить' style='width:140px; height:25px' /></td>
+				<td style='text-align:center;'><br/><input style='width:80px;cursor:pointer;' type='submit' name='sebotslogs_options_save_btn' value='Apply' style='width:140px; height:25px' /></td>
 				<td>&nbsp;</td>
 			</tr>
 		</table>";
@@ -533,8 +483,8 @@ function sebotslogs_register_meta_links($links, $file) {
     $base = plugin_basename(__FILE__);
 
     if ($file == $base) {
-        //$links[] = '<a href="options-general.php?page=sebotslogs" title="Настройки SE Robots log">' . __('Settings','sebotslogs') . '</a>';
-        $links[] = '<a href="options-general.php?page=sebotslogs" title="Настройки SE Robots log">Настройки</a>';
+        //$links[] = '<a href="options-general.php?page=sebotslogs" title="SE Robots log settings">' . __('Settings','sebotslogs') . '</a>';
+        $links[] = '<a href="options-general.php?page=sebotslogs" title="SE Robots log settings">Settings</a>';
     }
     return $links;
 }
@@ -550,7 +500,7 @@ function sebotslogs_register_action_links($links, $file) {
     $base = plugin_basename(__FILE__);
 
     if ($file == $base) {
-        $links[] = '<a href="options-general.php?page=sebotslogs" title="Настройки SE Robots log">Настройки</a>';
+        $links[] = '<a href="options-general.php?page=sebotslogs" title="SE Robots log settings">Settings</a>';
     }
     return $links;
 }
@@ -639,7 +589,7 @@ register_uninstall_hook( __FILE__, 'sebotslogs_uninstall' );
  *
  */
 function sebotslogs_add_dashboard_menu() {
-    add_dashboard_page('Статистика SE Robots log', 'SE Robots log', 'administrator', 'sebotslogs-dashboard', 'sebotslogs_options_page');
+    add_dashboard_page('SE Robots log statistics', 'SE Robots log', 'administrator', 'sebotslogs-dashboard', 'sebotslogs_options_page');
 }
 
 /**
@@ -647,7 +597,7 @@ function sebotslogs_add_dashboard_menu() {
  *
  */
 function sebotslogs_add_admin_pages() {
-    add_options_page( 'Статистика SE Robots log', 'SE Robots log', 'administrator', 'sebotslogs', 'sebotslogs_options_page' );
+    add_options_page( 'SE Robots log statistics', 'SE Robots log', 'administrator', 'sebotslogs', 'sebotslogs_options_page' );
 }
 
 /**
